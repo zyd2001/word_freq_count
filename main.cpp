@@ -72,21 +72,25 @@ int main()
 	ifstream fin, fsave, flemm("2+2+3lem.txt");
 	ofstream fout;
 	string temp, filename;
+	int count = 0;
 	vector<storage>::iterator result;
 	cout << "Program is initializing."<< endl;
 	readLem(flemm);
 	fsave.open("save.txt");
+	if (fsave.is_open())
+	{
+		fprocess(fsave);
+	}
 	cout << "Initialization successful! Please enter the file name(q to quit): " ;
 	cin >> filename;
 	while (filename != "q")
 	{
 		fin.open(filename.c_str());
-		if (fsave.is_open())
-		{
-			fprocess(fsave);
-		}
 		while (fin >> temp)
 		{
+			count++;
+			if (count % 100 == 0)
+				cout << "processed " << count << "words" << endl;
 			temp = process(temp);
 			if (temp.size() == 0)
 				continue;
@@ -102,10 +106,12 @@ int main()
 			}
 		}
 		fout.open("save.txt");
-		for (int i = 0; i < vi.size(); i++)
+		int i;
+		for (i = 0; i < vi.size() - 1; i++)
 		{
 			fout << vi[i].name << "\t" << vi[i].num << endl;
 		}
+		fout << vi[i].name << "\t" << vi[i].num;
 		fout.close();
 		fin.close();
 		cout << "The output is saved in save.txt! Please enter next file name(q to quit): ";
