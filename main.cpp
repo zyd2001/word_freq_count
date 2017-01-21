@@ -27,11 +27,41 @@ void fprocess(ifstream&);
 string process(string);
 void readLem(ifstream&);
 
+class findstorage
+{
+public:
+	findstorage(string st) :str(st) {}
+	bool operator()(storage s) { return (s.name) == str; }
+private:
+	string str;
+};
+
 class findstr
 {
 public:
-	findstr(string st) :str(st) {}
-	bool operator()(storage s) { return (s.name) == str; }
+	findstr(string st) : str(st) {}
+	bool operator()(string s) { return s == str; }
+private:
+	string str;
+};
+
+class findlem
+{
+public:
+	findlem(string st) : str(st) {}
+	bool operator()(slist s) 
+	{
+		if (s.head == str)
+			return true;
+		else
+		{
+			vector<string>::iterator result = find_if(s.var.begin(), s.var.end(), findstr(str));
+			if (result == s.var.end())
+				return false;
+			else
+				return true;
+		}
+	}
 private:
 	string str;
 };
@@ -58,7 +88,7 @@ int main(int argc, char* argv[])
 		temp = process(temp);
 		if (temp.size() == 0)
 			continue;
-		result = find_if(vi.begin(), vi.end(), findstr(temp));
+		result = find_if(vi.begin(), vi.end(), findstorage(temp));
 		if (result == vi.end())
 		{
 			storage s = { temp, 1 };
@@ -114,7 +144,14 @@ string process(string str)
 		}
 		str[i] = tolower(str[i]);
 	}
-	return str;
+	vector<slist>::iterator result = find_if(vlem.begin(), vlem.end(), findlem(str));
+	if (result == vlem.end())
+		return str;
+	else
+	{
+		str = result->head;
+		return str;
+	}
 }
 
 void readLem(ifstream &fin)
