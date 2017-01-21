@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
 
 using namespace std;
 
@@ -66,43 +67,49 @@ private:
 	string str;
 };
 
-int main(int argc, char* argv[])
+int main()
 {
 	ifstream fin, fsave, flemm("2+2+3lem.txt");
 	ofstream fout;
 	string temp, filename;
-	if (argc == 2)
-		filename = argv[1];
-	else
-		filename = "input.txt";
 	vector<storage>::iterator result;
+	cout << "Program is initializing."<< endl;
 	readLem(flemm);
-	fin.open(filename.c_str());
 	fsave.open("save.txt");
-	if (fsave.is_open())
+	cout << "Initialization successful! Please enter the file name(q to quit): " ;
+	cin >> filename;
+	while (filename != "q")
 	{
-		fprocess(fsave);
-	}
-	while (fin >> temp)
-	{
-		temp = process(temp);
-		if (temp.size() == 0)
-			continue;
-		result = find_if(vi.begin(), vi.end(), findstorage(temp));
-		if (result == vi.end())
+		fin.open(filename.c_str());
+		if (fsave.is_open())
 		{
-			storage s = { temp, 1 };
-			vi.push_back(s);
+			fprocess(fsave);
 		}
-		else
+		while (fin >> temp)
 		{
-			result->num++;
+			temp = process(temp);
+			if (temp.size() == 0)
+				continue;
+			result = find_if(vi.begin(), vi.end(), findstorage(temp));
+			if (result == vi.end())
+			{
+				storage s = { temp, 1 };
+				vi.push_back(s);
+			}
+			else
+			{
+				result->num++;
+			}
 		}
-	}
-	fout.open("save.txt");
-	for (int i = 0; i < vi.size(); i++)
-	{
-		fout << vi[i].name << "\t" << vi[i].num << endl;
+		fout.open("save.txt");
+		for (int i = 0; i < vi.size(); i++)
+		{
+			fout << vi[i].name << "\t" << vi[i].num << endl;
+		}
+		fout.close();
+		fin.close();
+		cout << "The output is saved in save.txt! Please enter next file name(q to quit): ";
+		cin >> filename;
 	}
 	return 0;
 }
