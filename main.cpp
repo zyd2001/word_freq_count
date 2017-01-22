@@ -19,14 +19,53 @@ struct storage
 	int num;
 };
 
+struct sl
+{
+	string name;
+	string head;
+
+	bool operator!=(string s) const
+	{
+		return name != s;
+	}
+	bool operator==(string s) const
+	{
+		return name == s;
+	}
+	bool operator>(sl s) const
+	{
+		return this->name > s.name;
+	}
+	bool operator<(sl s) const
+	{
+		return this->name < s.name;
+	}
+	bool operator>(string s) const
+	{
+		return this->name > s;
+	}
+	bool operator<(string s) const
+	{
+		return this->name < s;
+	}
+};
+
 vector<storage> vi;
 vector<slist> vlem;
+vector<sl> vl;
 
 void fprocess(ifstream&);
 //void outfile(ofstream&);
 //string lower(string);
 string process(string);
 void readLem(ifstream&);
+void sprocess();
+string binarySearch(string);
+
+bool comp(const sl &a, const sl &b)
+{
+	return a.name < b.name;
+}
 
 class findstorage
 {
@@ -50,7 +89,7 @@ class findlem
 {
 public:
 	findlem(string st) : str(st) {}
-	bool operator()(slist s) 
+	bool operator()(slist s)
 	{
 		if (s.head == str)
 			return true;
@@ -72,25 +111,28 @@ int main()
 	ifstream fin, fsave, flemm("2+2+3lem.txt");
 	ofstream fout;
 	string temp, filename;
-	int count = 0;
+	//int count = 0;
 	vector<storage>::iterator result;
-	cout << "Program is initializing."<< endl;
+	cout << "Program is initializing." << endl;
 	readLem(flemm);
-	fsave.open("save.txt");
+	sprocess();
+	vl.erase(vl.begin());
+	vlem.clear();
+	fsave.open("save1.txt");
 	if (fsave.is_open())
 	{
 		fprocess(fsave);
 	}
-	cout << "Initialization successful! Please enter the file name(q to quit): " ;
+	cout << "Initialization successful! Please enter the file name(q to quit): ";
 	cin >> filename;
 	while (filename != "q")
 	{
 		fin.open(filename.c_str());
 		while (fin >> temp)
 		{
-			count++;
+			/*count++;
 			if (count % 100 == 0)
-				cout << "processed " << count << "words" << endl;
+				cout << "processed " << count << "words" << endl;*/
 			temp = process(temp);
 			if (temp.size() == 0)
 				continue;
@@ -105,7 +147,7 @@ int main()
 				result->num++;
 			}
 		}
-		fout.open("save.txt");
+		fout.open("save1.txt");
 		int i;
 		for (i = 0; i < vi.size() - 1; i++)
 		{
@@ -135,6 +177,8 @@ void fprocess(ifstream & fin)
 
 string process(string str)
 {
+	if (str == "I")
+		goto skip;
 	for (int i = 0; i < str.size(); i++)
 	{
 		if (str.substr(i, 2) == "\'s" || str.substr(i, 2) == "\'d" || str.substr(i, 2) == "\'m")
@@ -157,14 +201,17 @@ string process(string str)
 		}
 		str[i] = tolower(str[i]);
 	}
-	vector<slist>::iterator result = find_if(vlem.begin(), vlem.end(), findlem(str));
+skip:
+	/*vector<slist>::iterator result = find_if(vlem.begin(), vlem.end(), findlem(str));
 	if (result == vlem.end())
 		return str;
 	else
 	{
 		str = result->head;
 		return str;
-	}
+	}*/
+	str = binarySearch(str);
+	return str;
 }
 
 void readLem(ifstream &fin)
@@ -197,4 +244,47 @@ void readLem(ifstream &fin)
 			continue;
 		}
 	}
+}
+
+void sprocess()
+{
+	int size = vlem.size();
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < vlem[i].var.size(); j++)
+		{
+			sl temp;
+			temp.name = vlem[i].var[j];
+			temp.head = vlem[i].head;
+			vl.push_back(temp);
+		}
+		sl temp;
+		temp.name = vlem[i].head;
+		temp.head = vlem[i].head;
+		vl.push_back(temp);
+	}
+	sort(vl.begin(), vl.end(), comp);
+}
+
+string binarySearch(string s)
+{
+	int size = vl.size();
+	int front = 0;
+	int back = size - 1;
+	int mid = size / 2;
+	while (vl[front] < vl[back] && vl[mid] != s)
+	{
+		if (vl[mid] > s)
+			back = mid - 1;
+		if (vl[mid] < s)
+			front = mid + 1;
+		if (back < 0)
+			back = 0;
+		if (front > vl.size())
+			front = vl.size();
+		mid = (front + back) / 2;
+	}
+	if (vl[mid] == s)
+		return vl[mid].head;
+	return s;
 }

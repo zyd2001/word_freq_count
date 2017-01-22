@@ -49222,7 +49222,7 @@ sojourn
 sojourner
 #sojourners
 sol
-#so#soh#sohs#sols#sos
+#soh#sohs#sols#sos
 solace
 #solaced#solaces#solacing
 solar
