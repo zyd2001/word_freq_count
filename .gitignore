@@ -2,3 +2,4 @@
 *.txt
 *.out
 .vscode/*
+*.csv

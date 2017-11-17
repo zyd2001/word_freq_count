@@ -29,7 +29,6 @@ void Counter::init()
     string buf, temp;
     while (getline(data, buf))
     {
-        buf.erase(buf.end() - 1);
         if (buf[0] == ' ')
         {
             istringstream is(buf);
@@ -48,10 +47,11 @@ void Counter::init()
     }
 }
 
-resultType Counter::count(std::function<void(string, out_of_range)> handle)
+resultType Counter::count(bool clear, std::function<void(string, out_of_range)> handle)
 {
     string word;
-    result.clear();
+    if (clear)
+        result.clear();
     while ((*file) >> word)
     {
         trim(word);
@@ -72,8 +72,6 @@ resultType Counter::count(std::function<void(string, out_of_range)> handle)
 
 string &Counter::trim(string &str)
 {
-    if (str == "I")
-        return str;
     for (auto iter = str.begin(); iter != str.end();)
     {
         if (isalpha(static_cast<unsigned char>(*iter)) || *iter == '-')
@@ -96,5 +94,7 @@ string &Counter::trim(string &str)
             str.erase(iter);
         }
     }
+    if (str == "i")
+        str[0] = 'I';
     return str;
 }
