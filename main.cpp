@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 			}
 				
 		}
-		counter.count(true);
+		counter.count();
 		cout << "More input files? (Y/N): ";
 		cin >> choice;
 		if (choice == 'Y' || choice == 'y')
