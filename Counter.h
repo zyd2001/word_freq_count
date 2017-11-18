@@ -21,14 +21,16 @@ namespace zyd2001::word_freq_count
         Counter(std::shared_ptr<std::ifstream> file);
         bool setFile(std::shared_ptr<std::ifstream> file);
         bool setFile(const std::string &);
-        resultType count(bool clear = false, std::function<void(std::string, std::out_of_range)> handle  = \
+		resultType result;
+		resultType &count(bool clear = false, std::function<void(std::string, std::out_of_range)> handle  = \
     [](std::string word, std::out_of_range e){std::cerr << "A word didn't find in table: " << word << std::endl;});
     private:
         void init();
+		std::string &clearFile();
         std::string &trim(std::string &str);
         std::string filename;
+		std::string fileContent;
         std::shared_ptr<std::ifstream> file;
-        resultType result;
         std::unordered_map<std::string, std::string> data_table;
     };
 }
